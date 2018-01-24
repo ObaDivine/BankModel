@@ -1,23 +1,57 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@using BankModel.Service.Interfaces
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject IConfiguration config 
+@inject IAuthorizationService AuthorizationService
+@inject IAccountService AccountService
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BankModel.Web</title>
+    <title>@ViewData["Title"]</title>
 
     <environment include="Development">
+        <link rel="stylesheet" href="~/lib/jquery/dist/css/jquery-ui.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/assets/css/site.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css">
+        <link rel="stylesheet" href="~/lib/bootstrap-table/dist/bootstrap-table.css"/>
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/jquery/dist/js/jquery-3.1.1.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/lib/jquery/dist/js/jquery-ui-1.12.1.min.js"></script>
+        <script src="~/lib/bootstrap-table/dist/bootstrap-table.js"></script>
+        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css"/>
+        <link rel="stylesheet" href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" />
+        <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     </environment>
+    <script>
+        function openNav() {
+            document.getElementById("sideNav").style.width = "250px";
+            document.getElementById("mainContent").style.marginLeft = "250px";
+            document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+        }
+        function closeNav() {
+            document.getElementById("sideNav").style.width = "0";
+            document.getElementById("mainContent").style.marginLeft = "0";
+            document.body.style.backgroundColor = "white";
+        }
+    </script>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top navbar-light">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -26,47 +60,367 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">BankModel.Web</a>
+                <div class="navbar-brand">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" >@config.GetSection("AppInfo")["Client"]</a>
+                </div>
+
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a style="font-size:15px;cursor:pointer;" onclick="openNav()">&#9776; Menu</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="WebMail"><span><i class="fa fa-envelope"></i> Web Mail</span></a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Help"><span><i class="fa fa-support"></i> Help</span></a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
     </nav>
-    <div class="container body-content">
+    <div id="mainContent" class="container body-content">
         @RenderBody()
+   </div>
+   <div id="sideNav" class="sidenav">
+       @if (SignInManager.IsSignedIn(User))
+       {
+        <div class="user-profile" style="text-align:center;">
+            <div class="profile-img">
+                <img src="@AccountService.GetProfileImage(UserManager.GetUserName(User))" class="img-rounded" />
+            </div>
+            <div class="user-name text-capitalize">
+                <p>@User.Identity.Name / Role </p>
+            </div>
+            <div class="profile-userbuttons" style="text-align:center;">
+                <a href="javascript:void(0)" class="closebtn btn btn-primary" onclick="closeNav()">Close</a>
+                <a asp-action="ChangePassword" asp-controller="Manage" class="btn btn-success btn-sm">Change password</a>
+            </div>
+        </div>
         <hr />
-        <footer>
-            <p>&copy; 2018 - BankModel.Web</p>
-        </footer>
-    </div>
+        <div class="panel-group" id="accordion">
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Administrator")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#system-admin" class="menu-header"><span><i class="fa fa-user-secret"></i></span> System Admin</a>
+                            </h5>
+                        </div>
+                        <div id="system-admin" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="SystemUsers" asp-controller="SystemAdmin">User Account</a></li>
+                                <li><a asp-action="SystemParameters" asp-controller="SystemAdmin">Application Parameters</a></li>
+                                <li><a asp-action="UserRoles" asp-controller="SystemAdmin">User Roles</a></li>
+                                <li><a asp-action="RemoteConnections" asp-controller="SystemAdmin">Remote Connection</a></li>
+                                <li><a asp-action="AuditLog" asp-controller="SystemAdmin">Audit Log</a></li>
+                            </ul>
+                        </div>
+                    </div>
 
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "RoutineProcessing")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#routine-processing" class="menu-header"><span><i class="fa fa-tasks"></i></span> Routine Processing</a>
+                            </h5>
+                        </div>
+                        <div id="routine-processing" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="EOD" asp-controller="RoutineProcessing">End of Day</a></li>
+                                <li><a asp-action="EOM" asp-controller="RoutineProcessing">End of Month</a></li>
+                                <li><a asp-action="EOY" asp-controller="RoutineProcessing">End of Year</a></li>
+                            </ul>
+                        </div>
+                    </div>
 
-    @RenderSection("Scripts", required: false)
-</body>
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Enquiry")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#enquiry" class="menu-header"><span><i class="fa fa-search"></i></span> Enquiry</a>
+                            </h5>
+                        </div>
+                        <div id="enquiry" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="CustomerEnquiry" asp-controller="Enquiry">Customer Details</a></li>
+                                <li><a asp-action="GLEnquiry" asp-controller="Enquiry">GL Accounts</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "CustomerService")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#customer-service" class="menu-header"><span><i class="fa fa-user"></i></span> Custom Service</a>
+                            </h5>
+                        </div>
+                        <div id="customer-service" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="CustomerAccount" asp-controller="CustomerService">Customer Account</a></li>
+                                <li><a asp-action="AccountMaintenance" asp-controller="CustomerService">Account Maintenance</a></li>
+                                <li><a asp-action="IndividualProfile" asp-controller="CustomerService">Individual Profile</a></li>
+                                <li><a asp-action="CorporateProfile" asp-controller="CustomerService">Corporate Profile</a></li>
+                                <li><a asp-action="ProfileMaintenance" asp-controller="CustomerService">Profile Maintenance</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "CashTransaction")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#cash-trans" class="menu-header"><span><i class="glyphicon glyphicon-piggy-bank"></i></span> Cash Transaction</a>
+                            </h5>
+                        </div>
+                        <div id="cash-trans" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="CashDeposit" asp-controller="CashTransaction">Deposit</a></li>
+                                <li><a asp-action="CashWithdrawal" asp-controller="CashTransaction">Withdrawal</a></li>
+                                <li><a asp-action="FundTransfer" asp-controller="CashTransaction">Fund Transfer</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Treasury")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#treasury" class="menu-header"><span><i class="fa fa-exchange"></i></span> Treasury</a>
+                            </h5>
+                        </div>
+                        <div id="treasury" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="BankTransfer" asp-controller="CashTransactions">Vault - Bank</a></li>
+                                <li><a asp-action="TellerTransfer" asp-controller="CashTransactions">Vault - Teller</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Loan")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#loan" class="menu-header"><span><i class="fa fa-asterisk"></i></span> Loan</a>
+                            </h5>
+                        </div>
+                        <div id="loan" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="LoanBooking" asp-controller="Loan">Book Loan</a></li>
+                                <li><a asp-action="LoanMaintenance" asp-controller="Loan">Maintain Loan</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "FixedDeposit")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#fixed-deposit" class="menu-header"><span><i class="fa fa-cog"></i></span> Fixed Deposit</a>
+                            </h5>
+                        </div>
+                        <div id="fixed-deposit" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="FixedDepositBooking" asp-controller="FixedDeposit">Book Fixed Deposit</a></li>
+                                <li><a asp-action="FixedDepositMaintenance" asp-controller="FixedDeposit">Maintain Fixed Deposit</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "GLTransaction")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#gl-trans" class="menu-header"><span><i class="fa fa-th"></i></span> GL Transaction</a>
+                            </h5>
+                        </div>
+                        <div id="gl-trans" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="ChartofAccount" asp-controller="GeneralLedger">Chart of Account</a></li>
+                                <li><a asp-action="GLPosting" asp-controller="GeneralLedger">Post Transaction</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Salary")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#salary" class="menu-header"><span><i class="fa fa-paypal"></i></span> Salary</a>
+                            </h5>
+                        </div>
+                        <div id="salary" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="SalaryPosting" asp-controller="Salary">Post Salary</a></li>
+                                <li><a asp-action="SalaryMaintenance" asp-controller="Salary">Maintain Schedule</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Template")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#template" class="menu-header"><span><i class="fa fa-file-text"></i></span> Templates</a>
+                            </h5>
+                        </div>
+                        <div id="template" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="Account" asp-controller="Template">Account Template</a></li>
+                                <li><a asp-action="FixedDeposit" asp-controller="Template">Fixed Deposit Template</a></li>
+                                <li><a asp-action="Loan" asp-controller="Template">Loan Template</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Report")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#report" class="menu-header"><span><i class="fa fa-edge"></i></span> Report</a>
+                            </h5>
+                        </div>
+                        <div id="report" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="Transaction" asp-controller="Reports">Transaction Report</a></li>
+                                <li><a asp-action="Operation" asp-controller="Reports">Operation Report</a></li>
+                                <li><a asp-action="Management" asp-controller="Reports">Management Report</a></li>
+                                <li><a asp-action="Loan" asp-controller="Reports">Loan Report</a></li>
+                                <li><a asp-action="FixedDeposit" asp-controller="Reports">Fixed Deposit Report</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Setup")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#setup" class="menu-header"><span><i class="fa fa-file"></i></span> Setup</a>
+                            </h5>
+                        </div>
+                        <div id="setup" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="Branches" asp-controller="Setup">Branch</a></li>
+                                <li><a asp-action="AccountSubHeads" asp-controller="Setup">Account SubHead</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Product")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#product" class="menu-header"><span><i class="fa fa-file" style="font-size:12px;"></i></span> Product</a>
+                            </h5>
+                        </div>
+                        <div id="product" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="CashMob" asp-controller="Product">Cash Mob</a></li>
+                                <li><a asp-action="ContributoryScheme" asp-controller="Product">Contributory Scheme</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "MobileMoney")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#mobile-money" class="menu-header"><span><i class="fa fa-file" style="font-size:12px;"></i></span> Mobile Money</a>
+                            </h5>
+                        </div>
+                        <div id="mobile-money" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="CashMob" asp-controller="Product">Cash Mob</a></li>
+                                <li><a asp-action="ContributoryScheme" asp-controller="Product">Contributory Scheme</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+                @if ((await AuthorizationService.AuthorizeAsync(User, "Approval")).Succeeded)
+                {
+                    <div class="panel panel-default" style="border:0;">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#approval" class="menu-header"><span><i class="fa fa-thumbs-up" style="font-size:12px;"></i></span> Approvals</a>
+                            </h5>
+                        </div>
+                        <div id="approval" class="panel-collapse collapse">
+                            <ul class="nav">
+                                <li><a asp-action="SystemUsers" asp-controller="Approval">System Users</a></li>
+                                <li><a asp-action="Branches" asp-controller="Approval">Branches</a></li>
+                                <li><a asp-action="ChartOfAccount" asp-controller="Approval">Chart of Account</a></li>
+                                <li><a asp-action="Profile" asp-controller="Approval">Profiles</a></li>
+                                <li><a asp-action="CorporateCustomer" asp-controller="Approval">Corporate Customer</a></li>
+                                <li><a asp-action="CustomerAccount" asp-controller="Approval">Customer Account</a></li>
+                                <li><a asp-action="CashTransaction" asp-controller="Approval">Cash Transaction</a></li>
+                                <li><a asp-action="GLTransaction" asp-controller="Approval">GL Transaction</a></li>
+                                <li><a asp-action="Loan" asp-controller="Approval">Loan</a></li>
+                                <li><a asp-action="LoanRepayment" asp-controller="Approval">Loan Repayment</a></li>
+                                <li><a asp-action="FixedDeposit" asp-controller="Approval">Fixed Deposit</a></li>
+                                <li><a asp-action="Treasury" asp-controller="Approval">Treasury Transaction</a></li>
+                                <li><a asp-action="ReverseTransaction" asp-controller="Approval">Reverse Transaction</a></li>
+                                <li><a asp-action="Salary" asp-controller="Approval">Salary</a></li>
+                                <li><a asp-action="MobileMoney" asp-controller="Approval">Mobile Money</a></li>
+                                <li><a asp-action="Template" asp-controller="Approval">Templates</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                }
+            </div>
+
+        <a asp-action="AboutUs" asp-controller="Home">Powered by: Entity Technology</a>
+       }
+   </div>
+
+   <environment include="Development">
+            <script src="~/lib/jquery/dist/jquery.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+        </environment>
+   <environment exclude="Development">
+            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery"
+                    crossorigin="anonymous"
+                    integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+            </script>
+            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                    crossorigin="anonymous"
+                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+            </script>
+            <script src="~/js/site.min.js" asp-append-version="true"></script>
+        </environment>
+
+        @RenderSection("Scripts", required: false)
+    </body>
+
 </html>

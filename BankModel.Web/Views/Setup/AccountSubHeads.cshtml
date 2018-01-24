@@ -1,0 +1,44 @@
+﻿@model AccountSubHeadViewModel
+@{
+    ViewData["Title"] = "Setup";
+}
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-offset-4 col-md-4">
+            @Html.Partial("_StatusMessage", Model.StatusMessage)
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Chart of Account Sub Heads</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form asp-action="AccountSubHeads" asp-controller="Setup" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <input asp-for="AccountCode" class="form-control borderless" placeholder="Account code" />
+                        </div>
+                        <div class="form-group">
+                            <select asp-for="AccountHead" asp-items="@{(SelectList)ViewData["AccountHead"]}" class="form-control"></select>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="AccountName" class="form-control borderless" placeholder="Account name" />
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="ReportingLine" class="form-control borderless" placeholder="Report line e.g Current Asset" />
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="ID" class="hidden" />
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary form-control" type="submit">Add SubHead</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="AccountSubHeadListing" asp-controller="Setup">View Account SubHeads</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

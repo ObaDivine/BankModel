@@ -1,0 +1,72 @@
+﻿@using BankModel.Service.Interfaces
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@inject ICashService CashService
+@model TransactionViewModel
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            @Html.Partial("_StatusMessage", Model.StatusMessage)
+            <form asp-action="CashDeposit" asp-controller="CashTransaction" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <h5>Cash Deposit</h5>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div asp-validation-summary="All" class="text-danger col-sm-offset-4 col-sm-8"></div>
+                        <div class="form-group-sm">
+                            <label asp-for="DR" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                @{ var user = await UserManager.GetUserAsync(User);}
+                                <input asp-for="DR" class="form-control" value="@CashService.GetTellerAccount(user.UserName)" readonly="readonly"  />
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="CR" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <input asp-for="CR" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="Amount" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <input asp-for="Amount" class="form-control"  type="number" step="0.001"/>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="Narration" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <input asp-for="Narration" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="InstrumentNo" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <input asp-for="InstrumentNo" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group-sm"><input asp-for="ID" class="hidden" /></div>
+                        <div class="form-group-sm">
+
+                        </div>
+
+                    </div>
+                    <div class="panel-footer">
+                        <a asp-action="CashDepositListing" asp-controller="CashTransaction">View Transactions</a>
+                        <button class="btn btn-primary btn-sm pull-right" type="submit">Create Deposit</button>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

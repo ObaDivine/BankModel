@@ -1,0 +1,72 @@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Account Transactions</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table data-toggle="table" data-class="table table-hover table-condense"
+                           data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                           data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                           data-show-pagination-switch="true" data-id-field="Id">
+                        <thead>
+                            <tr>
+                                <th data-field="Id" class="hidden">ID</th>
+                                <th data-field="TransDate">Date</th>
+                                <th data-field="Account">Account</th>
+                                <th data-field="Narration">Narration</th>
+                                <th data-field="Type">Type</th>
+                                <th data-field="BalanceBF">Balance BF</th>
+                                <th data-field="Amount">Amount</th>
+                                <th data-field="ClosingBalance">Closing Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="hidden">@item.ID</td>
+                                    <td>@item.TransDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.Account</td>
+                                    <td>@item.Narration/td>
+                                    <td>@item.TransType</td>
+                                    <td>@item.BalanceBF.ToString("#,##0.00")</td>
+                                    <td>@item.Amount.ToString("#,##0.00")</td>
+                                    <td>@item.ClosingBalance.ToString("#,##0.00")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="CustomerEnquiry" asp-controller="Enquiry" class="btn btn-primary btn-sm pull-right">Back</a>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+
+
+
+
+
+
+
+
+
+

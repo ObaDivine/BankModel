@@ -1,0 +1,98 @@
+﻿@model UserRoleViewModel
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+<script>
+    $(document).ready(function () {
+        $("#Role").change(function () {
+            if ($("#Role").val() != "--Select--") {
+                $.ajax
+                    ({
+                        url: "/SystemAdmin/GetRolePermissions",
+                        type: "POST",
+                        cache: false,
+                        dataType: "JSON",
+                        data: { role: $("#Role").val() },
+                        success: function (item) {
+                            $("#Permission").html("");
+                            for (var i = 0; i < item.length; i++) {
+                                $("#Permission").append("<option>" + item[i] + "</option>");
+                            }
+                        },
+                        error: function (xhr, status) { alert(status); }
+                    });
+            };
+        });
+    })
+</script>
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            @Html.Partial("_StatusMessage", Model.StatusMessage)
+            <form asp-action="" asp-controller="SystemAdmin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                <div class="panel-group">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <h5>Identity Role</h5>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group-sm">
+                                <label asp-for="User" class="control-label enquiry-text col-sm-3"></label>
+                                <div class="col-sm-9">
+                                    <select asp-for="User" asp-items="@{(SelectList)ViewData["Users"]}" class="form-control"></select>
+                                </div>
+                            </div>
+                            <div class="form-group-sm">
+                                <label asp-for="Role" class="control-label enquiry-text col-sm-3"></label>
+                                <div class="col-sm-9">
+                                    <select asp-for="Role" asp-items="@{(SelectList)ViewData["Roles"]}" class="form-control"></select>
+                                </div>
+                            </div>
+                            <div class="form-group"></div>
+                            <div class="form-group-sm">
+                                <div class="col-sm-offset-3 col-sm-9">
+                                    <div class="btn-group-sm">
+                                        <button class="btn btn-primary" type="submit" formaction="/SystemAdmin/AddRole">Add Role</button>
+                                        <button class="btn btn-primary" type="submit" formaction="/SystemAdmin/RemoveRole">Remove Role</button>
+                                        <button class="btn btn-primary" type="submit" formaction="/SystemAdmin/SystemUserDetails">User Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <h5>Role Permission</h5>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group-sm">
+                                <label asp-for="Permission" class="control-label enquiry-text col-sm-3"></label>
+                                <div class="col-sm-9">
+                                    <select asp-for="Permission" asp-items="@{(SelectList)ViewData["Permissions"]}" class="form-control"></select>
+                                </div>
+                            </div>
+                            <div class="form-group"></div>
+                            <div class="form-group-sm">
+                                <div class="col-sm-offset-3 col-sm-9">
+                                    <div class="btn-group-sm">
+                                        <button class="btn btn-primary" type="submit" formaction="/SystemAdmin/AddRolePermission">Add Permission</button>
+                                        <button class="btn btn-primary" type="submit" formaction="/SystemAdmin/RemoveRolePermission">Remove Permission</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

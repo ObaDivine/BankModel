@@ -1,0 +1,70 @@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Pending System Users</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table data-toggle="table" data-class="table table-hover table-condense"
+                           data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                           data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                           data-show-pagination-switch="true" data-id-field="Id">
+                        <thead>
+                            <tr>
+                                <th data-field="Id" class="hidden">ID</th>
+                                <th data-field="Branch">Branch</th>
+                                <th data-field="UserName">Username</th>
+                                <th data-field="TransactionLimit">Transaction Limit</th>
+                                <th data-field="ApprovalLimit">Approval Limit</th>
+                                <th data-field="PostedBy">Created By</th>
+                                <th data-field="TransDate">Date Created</th>
+                                <th data-field="action"><i class="fa fa-cog"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="hidden">@item.ID</td>
+                                    <td>@item.Branch</td>
+                                    <td>@item.Username</td>
+                                    <td>@item.TransactionLimit.ToString("#,##0.00")</td>
+                                    <td>@item.ApprovalLimit.ToString("#,##0.00")</td>
+                                    <td>@item.PostedBy</td>
+                                    <td>@item.TransDate.ToString("d")</td>
+                                    <td>
+                                        <a asp-action="ApproveSystemUsers" asp-controller="Approval" asp-route-id="@item.ID" class="btn btn-success btn-sm"><i class="fa fa-thumbs-up"> Approve</i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+
+
+
+
+
+
+
+
+
+

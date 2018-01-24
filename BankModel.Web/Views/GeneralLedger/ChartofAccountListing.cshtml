@@ -1,0 +1,69 @@
+﻿@model IEnumerable<BranchChartofAccountViewModel>
+@using BankModel.Web.Interfaces
+@inject IGeneralLedgerService GLService
+@{
+    ViewData["Title"] = "Setup";
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Branch Chart of Account Listing</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table data-toggle="table" data-class="table table-condensed" 
+                           data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                           data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                           data-show-pagination-switch="true" data-id-field="Id">
+                        <thead>
+                            <tr>
+                                <th data-field="Id" class="hidden">ID</th>
+                                <th data-field="AccountCode">Account Number</th>
+                                <th data-field="AccountName">Account Name</th>
+                                <th data-field="AccountHead">Account Head</th>
+                                <th data-field="AccountSubHead">Account SubHead</th>
+                                <th data-field="action"><i class="fa fa-cog"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="hidden">@item.ID</td>
+                                    <td>@item.AccountNo</td>
+                                    <td>@item.AccountName</td>
+                                    <td>@item.AccountHead</td>
+                                    <td>@item.AccountSubHead</td>
+                                    <td>
+                                        @if (item.Status == "ACTIVE")
+                                        {
+                                            var accountInUse = await GLService.IsChartofAccountInUse(item.ID);
+                                            @if (!accountInUse)
+                                            {
+                                                <a asp-action="UpdateChartofAccount" asp-controller="GeneralLedger" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-pencil"> Update</i></a>
+                                            }
+                                        }
+                                        @if(item.Status == "PENDING")
+                                        {
+                                            <a asp-action="UpdateChartofAccount" asp-controller="GeneralLedger" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-pencil"> Update</i></a>
+                                            <a asp-action="DropChartofAccount" asp-controller="GeneralLedger" asp-route-id="@item.ID" class="btn btn-danger btn-sm"><i class="fa fa-trash"> Drop</i></a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="ChartofAccount" asp-controller="GeneralLedger" class="btn btn-primary btn-sm pull-right">Back</a>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

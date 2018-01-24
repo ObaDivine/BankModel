@@ -1,0 +1,75 @@
+﻿@model IEnumerable<SystemUserDetailsViewModel>
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-12">
+            @foreach (var msg in Model)
+            {
+                @Html.Partial("_StatusMessage", msg.StatusMessage)
+            }
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>System Users Listing</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table data-toggle="table" data-class="table table-condensed" 
+                           data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                           data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                           data-show-pagination-switch="true" data-id-field="Id">
+                        <thead>
+                            <tr>
+                                <th data-field="Id" class="hidden">ID</th>
+                                <th data-field="Branch">Branch</th>
+                                <th data-field="UserName">Username</th>
+                                <th data-field="PasswordExpiryDate">Password Expiry</th>
+                                <th data-field="TransactionLimit">Transaction Limit</th>
+                                <th data-field="ApprovalLimit">Approval Limit</th>
+                                <th data-field="PostedBy">Created By</th>
+                                <th data-field="TransDate">Date Created</th>
+                                <th data-field="action"><i class="fa fa-cog"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="hidden">@item.ID</td>
+                                    <td>@item.Branch</td>
+                                    <td>@item.Username</td>
+                                    <td>@item.PasswordExpiryDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.TransactionLimit.ToString("#,##0.00")</td>
+                                    <td>@item.ApprovalLimit.ToString("#,##0.00")</td>
+                                    <td>@item.PostedBy</td>
+                                    <td>@item.TransDate.ToString("yyyy-MM-dd")</td>
+                                    <td>
+                                        @if (item.Status == "ACTIVE")
+                                        {
+                                            <a asp-action="UpdateSystemUser" asp-controller="SystemAdmin" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-pencil"> Update</i></a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="UpdateSystemUser" asp-controller="SystemAdmin" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-pencil"> Update</i></a>
+                                            <a asp-action="DropSystemUser" asp-controller="SystemAdmin" asp-route-id="@item.ID" class="btn btn-danger btn-sm"><i class="fa fa-trash"> Drop</i></a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="SystemUsers" asp-controller="SystemAdmin" class="btn btn-primary btn-sm pull-right">Back</a>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

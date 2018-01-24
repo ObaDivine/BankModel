@@ -1,0 +1,59 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Pending Customer Account </h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table data-toggle="table" data-class="table table-condensed" 
+                           data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                           data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                           data-show-pagination-switch="true" data-id-field="Id">
+                        <thead>
+                            <tr>
+                                <th data-field="Id">Account Number</th>
+                                <th data-field="AccountType">Account Type</th>
+                                <th data-field="AccountOfficer">Account Officer</th>
+                                <th data-field="ProductCode">Product Code</th>
+                                <th data-field="PostedBy">Created By</th>
+                                <th data-field="TransDate">Date Created</th>
+                                <th data-field="Status">Status</th>
+                                <th data-field="action"><i class="fa fa-cog"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.ID</td>                                 
+                                    <td>@item.AccountType</td>
+                                    <td>@item.AccountOfficer</td>
+                                    <td>@item.ProductCode</td>
+                                    <td>@item.PostedBy</td>
+                                    <td>@item.TransDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.Status</td>
+                                    <td>
+                                        <div class="btn-group-xs">
+                                            <a asp-action="AccountDetails" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-info"><i class="fa fa-info"> Details</i></a>
+                                            <a asp-action="ApproveCustomerAccount" asp-controller="Approval" asp-route-id="@item.ID" class="btn btn-success"><i class="fa fa-thumbs-up"> Approve</i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,75 @@
+﻿@using BankModel.Service.Interfaces
+@inject ICustomerService CustomerService
+@{
+    ViewData["Title"] = "profile";
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Corporate Profile Listing</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table data-toggle="table" data-class="table table-condensed"
+                           data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                           data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                           data-show-pagination-switch="true" data-id-field="Id">
+                        <thead>
+                            <tr>
+                                <th data-field="Id">ID</th>
+                                <th data-field="Branch">Branch</th>
+                                <th data-field="CustomerType">Type</th>
+                                <th data-field="Lastname">Names</th>
+                                <th data-field="DateOfBirth">Date of Incorp.</th>
+                                <th data-field="IncorporationType">Type of Incorp.</th>
+                                <th data-field="PostedBy">Created By</th>
+                                <th data-field="TransDate">Date Created</th>
+                                <th data-field="Status">Status</th>
+                                <th data-field="action"><i class="fa fa-cog"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.ID</td>
+                                    <td>@item.Branch.BranchDesc</td>
+                                    <td>@item.CustomerType</td>
+                                    <td>@item.Lastname</td>
+                                    <td>@item.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.IncorporationType</td>
+                                    <td>@item.PostedBy</td>
+                                    <td>@item.TransDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.Status</td>
+                                    <td>
+                                        @if (item.Status == "ACTIVE")
+                                        {
+                                            @if (!CustomerService.IsProfileInUse(item.ID))
+                                            {
+                                                <a asp-action="UpdateCorporateProfile" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-pencil"> Update</i></a>
+                                            }
+                                        }
+                                        @if (item.Status == "PENDING")
+                                        {
+                                            <a asp-action="UpdateCorporateProfile" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-pencil"> Update</i></a>
+                                            <a asp-action="DropCorporateProfile" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-danger btn-sm"><i class="fa fa-trash"> Drop</i></a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="CorporateProfile" asp-controller="CustomerService" class="btn btn-primary btn-sm pull-right">Back</a>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

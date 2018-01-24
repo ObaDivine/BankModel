@@ -1,0 +1,77 @@
+﻿@using BankModel.Service.Interfaces
+@inject ICustomerService CustomerService
+@{
+    ViewData["Title"] = "Setup";
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Customer Account Listing</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table data-toggle="table" 
+                           data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                           data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                           data-show-pagination-switch="true" data-id-field="Id">
+                        <thead>
+                            <tr>
+                                <th data-field="Profile">Customer ID</th>
+                                <th data-field="Id">Account Number</th>
+                                <th data-field="AccountType">Account Type</th>
+                                <th data-field="AccountOfficer">Account Officer</th>
+                                <th data-field="ProductCode">Product Code</th>
+                                <th data-field="Branch">Branch</th>
+                                <th data-field="PostedBy">Created By</th>
+                                <th data-field="TransDate">Date Created</th>
+                                <th data-field="Status">Status</th>
+                                <th data-field="action"><i class="fa fa-cog"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Profile.ID</td>
+                                    <td>@item.ID</td>
+                                    <td>@item.AccountType</td>
+                                    <td>@item.AccountOfficer</td>
+                                    <td>@item.ProductCode</td>
+                                    <td>@item.Branch.BranchDesc</td>
+                                    <td>@item.PostedBy</td>
+                                    <td>@item.TransDate.ToString("d")</td>
+                                    <td>@item.Status</td>
+                                    <td>
+                                        @if (item.Status == "ACTIVE")
+                                        {
+                                            @if (!CustomerService.IsAccountInUse(item.ID))
+                                            {
+                                                <a asp-action="UpdateCustomerAccount" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-info btn-xs"><i class="fa fa-pencil"> Update</i></a>
+                                            }
+                                        }
+                                        @if(item.Status == "PENDING")
+                                        {
+                                            <div class="btn-group-xs">
+                                                <a asp-action="UpdateCustomerAccount" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-info"><i class="fa fa-pencil"> Update</i></a>
+                                                <a asp-action="DropCustomerAccount" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-danger"><i class="fa fa-trash"> Drop</i></a>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="CustomerAccount" asp-controller="CustomerService" class="btn btn-primary btn-sm pull-right">Back</a>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

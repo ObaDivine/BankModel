@@ -1,0 +1,173 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title"><h5>Pending Templates</h5></div>
+                </div>
+                <div class="panel-body">
+                    <div id="Tabs" role="tabpanel">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="active">
+                                <a href="#account" aria-controls="account-template" role="tab" data-toggle="tab">Account Template</a>
+                            </li>
+                            <li>
+                                <a href="#loan" aria-controls="loan-template" role="tab" data-toggle="tab">Loan Template</a>
+                            </li>
+                            <li>
+                                <a href="#fixedDeposit" aria-controls="fixedDeposit-template" role="tab" data-toggle="tab">Fixed Deposit Template</a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content" style="padding-top: 20px">
+                            <div role="tabpanel" class="tab-pane active" id="account">
+                                <table data-toggle="table" data-class="table table-hover table-condense"
+                                       data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                                       data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                                       data-show-pagination-switch="true" data-id-field="Id">
+                                    <thead>
+                                        <tr>
+                                            <th data-field="Id" class="hidden">ID</th>
+                                            <th data-field="TemplateName">Template Name</th>
+                                            <th data-field="ProductCode">Product Code</th>
+                                            <th data-field="PostedBy">Created By</th>
+                                            <th data-field="TransDate">Date Created</th>
+                                            <th data-field="Status">Status</th>
+                                            <th data-field="action"><i class="fa fa-cog"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in ViewBag.AccountTemplate)
+                                        {
+                                            <tr>
+                                                <td class="hidden">@item.ID</td>
+                                                <td>@item.TemplateName</td>
+                                                <td>@item.ProductCode</td>
+                                                <td>@item.PostedBy</td>
+                                                <td>@item.TransDate.ToString("yyyy-MM-dd")</td>
+                                                <td>@item.Status</td>
+                                                <td>
+                                                    <div class="btn-group-sm">
+                                                        <a asp-action="AccountTemplateDetails" asp-controller="Approval" asp-route-id="@item.ID" class="btn btn-info"><i class="fa fa-info"> Details</i></a>
+                                                        <a asp-action="ApproveAccountTemplate" asp-controller="Approval" asp-route-id="@item.ID" class="btn btn-success"><i class="fa fa-thumbs-up"> Approve</i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane" id="loan">
+                                <table data-toggle="table" data-class="table table-hover table-condense"
+                                       data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                                       data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                                       data-show-pagination-switch="true" data-id-field="Id">
+                                    <thead>
+                                        <tr>
+                                            <th data-field="Id">ID</th>
+                                            <th data-field="Lastname">Name</th>
+                                            <th data-field="EmployerAddress">Business Address</th>
+                                            <th data-field="DateOfBirth">Date of Inc.</th>
+                                            <th data-field="IncorporationType">Type of Inc.</th>
+                                            <th data-field="RCNo">RC Number</th>
+                                            <th data-field="PostedBy">Created By</th>
+                                            <th data-field="action"><i class="fa fa-cog"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in ViewBag.LoanTemplate)
+                                        {
+                                            @if (item.ID == 0)
+                                            {
+                                                <tr>
+                                                    <td>@item.ID</td>
+                                                    <td>@item.Lastname</td>
+                                                    <td>@item.EmployerAddress</td>
+                                                    <td>@item.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                                    <td>@item.IncorporationType</td>
+                                                    <td>@item.RCNo</td>
+                                                    <td>@item.PostedBy</td>
+                                                    <td>
+                                                        <div class="btn-group-sm">
+                                                            <a asp-action="Details" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-info"> Details</i></a>
+                                                            <a asp-action="ApproveProfile" asp-controller="Approval" asp-route-id="@item.ID" class="btn btn-success btn-sm"><i class="fa fa-thumbs-up"> Approve</i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane" id="fixedDeposit">
+                                <table data-toggle="table" data-class="table table-hover table-condense"
+                                       data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                                       data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                                       data-show-pagination-switch="true" data-id-field="Id">
+                                    <thead>
+                                        <tr>
+                                            <th data-field="Id">ID</th>
+                                            <th data-field="Lastname">Name</th>
+                                            <th data-field="EmployerAddress">Business Address</th>
+                                            <th data-field="DateOfBirth">Date of Inc.</th>
+                                            <th data-field="IncorporationType">Type of Inc.</th>
+                                            <th data-field="RCNo">RC Number</th>
+                                            <th data-field="PostedBy">Created By</th>
+                                            <th data-field="action"><i class="fa fa-cog"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in ViewBag.FixedDepositTemplate)
+                                        {
+                                            @if (item.ID == 0)
+                                            {
+                                                <tr>
+                                                    <td>@item.ID</td>
+                                                    <td>@item.Lastname</td>
+                                                    <td>@item.EmployerAddress</td>
+                                                    <td>@item.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                                    <td>@item.IncorporationType</td>
+                                                    <td>@item.RCNo</td>
+                                                    <td>@item.PostedBy</td>
+                                                    <td>
+                                                        <div class="btn-group-sm">
+                                                            <a asp-action="Details" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-info"> Details</i></a>
+                                                            <a asp-action="ApproveProfile" asp-controller="Approval" asp-route-id="@item.ID" class="btn btn-success btn-sm"><i class="fa fa-thumbs-up"> Approve</i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+
+
+
+
+
+
+
+
+
+

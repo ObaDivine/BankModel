@@ -1,0 +1,82 @@
+﻿@model ChartofAccountViewModel
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+
+<script>
+    $(document).ready(function () {
+        $("#AccountHead").change(function () {
+            if ($("#AccountHead").val() != "--Select--") {
+                $.ajax
+                    ({
+                        url: "/GeneralLedger/GetAccountSubHeads",
+                        type: "POST",
+                        cache: false,
+                        dataType: "JSON",
+                        data: { accountHead: $("#AccountHead").val() },
+                        success: function (item) {
+                            $("#AccountSubHead").html("");
+                            for (var i = 0; i < item.length; i++) {
+                                $("#AccountSubHead").append("<option>" + item[i] + "</option>");
+                            }
+                        },
+                        error: function (xhr, status) { alert(status); }
+                    });
+            };
+        });
+    })
+</script>
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            @Html.Partial("_StatusMessage", Model.StatusMessage)
+            <form asp-action="ChartofAccount" asp-controller="GeneralLedger" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <h5>Create Chart of Account Items</h5>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div asp-validation-summary="All" class="text-danger col-sm-offset-4 col-sm-8"></div>
+                        <div class="form-group-sm">
+                            <label asp-for="Branch" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="Branch" asp-items="@{(SelectList)ViewData["Branches"]}" class="form-control">
+                                    <option>--Select--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="AccountHead" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="AccountHead" asp-items="@{(SelectList)ViewData["AccountHead"]}" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="AccountSubHead" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="AccountSubHead" asp-items="@{(SelectList)ViewData["AccountSubHead"]}" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="AccountName" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <input asp-for="AccountName" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group-sm"><input asp-for="ID" class="hidden" /></div>
+                    </div>
+                    <div class="panel-footer">
+                        <a asp-action="ChartofAccountListing" asp-controller="GeneralLedger">Chart of Account Listing</a>
+                        <button class="btn btn-primary btn-sm pull-right" type="submit">Add Chart Item</button>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

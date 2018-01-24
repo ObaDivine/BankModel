@@ -1,0 +1,46 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Application Parameters</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table data-toggle="table" data-class="table table-condensed"
+                           data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                           data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                           data-show-pagination-switch="true" data-id-field="Id">
+                        <thead>
+                            <tr>
+                                <th data-id-field="ID">Parameter ID</th>
+                                <th data-field="ParamName">Parameter Name</th>
+                                <th data-field="ParamValue">Parameter Value</th>
+                                <th data-field="ParamDesc">Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var param in Model)
+                            {
+                                <tr id="@param.ID">
+                                    <td>@param.ID</td>
+                                    <td>@param.Name</td>
+                                    <td>@param.Value</td>
+                                    <td>@param.Description</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

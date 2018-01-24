@@ -1,0 +1,42 @@
+﻿@model BranchViewModel
+@{
+    ViewData["Title"] = "Branches";
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-offset-4 col-md-4">
+            @Html.Partial("_StatusMessage", Model.StatusMessage)
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Update Branch</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form asp-action="UpdateBranch" asp-controller="Setup" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <input asp-for="BranchCode" class="form-control borderless" placeholder="Branch code" />
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="BranchDesc" class="form-control borderless" placeholder="Branch description" />
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="BranchLocation" class="form-control borderless" placeholder="Branch location" />
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="BranchManager" class="form-control borderless" placeholder="Branch manager" />
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary form-control" type="submit">Update Branch</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="BranchListing" asp-controller="Setup">View Branches</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

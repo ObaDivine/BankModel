@@ -1,0 +1,247 @@
+﻿@using BankModel.Service.Interfaces
+@inject ICustomerService CustomerService
+@model Profile
+@{
+    ViewData["Title"] = "Enquiry";
+}
+
+<div class="container-fluid top-panel">
+    <div class="panel panel-default">
+        <div class="panel-heading text-center">
+            <div class="panel-title"><h5>Profile for @string.Concat(Model.Lastname, " ", Model.Othernames)</h5></div>
+        </div>
+        <div class="panel-body">
+            @if (!string.IsNullOrEmpty(Model.ID))
+            {
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <img src="~/assets/images/profile-images/@string.Concat(Model.ID, ".jpg")" />
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.ID.Contains(CustomerService.GetIndividualProfilePrefix()))
+                {
+                        <div class="col-md-5">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Customer Number</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.ID</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Customer Names</div>
+                                        <div class="col-sm-7 enquiry-value">@string.Concat(Model.Lastname, ", ", Model.Othernames)</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Customer Type</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.CustomerType</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Date of Birth</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.DateOfBirth.ToString("yyyy-MM-dd")</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Gender</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.Gender</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Marital Status</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.MaritalStatus</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Status</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.Status</div>
+                                    </div>
+                                    <hr />
+                                    <h5><label>Nationality</label></h5>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Nationality</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.Nationality</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">State of Origin</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.StateOfOrigin</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">L.G.A</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.LGA</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Home Town</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.HomeTown</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <h5><label>Contact</label></h5>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Contact Address</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.ContactAddress</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Email</div>
+                                        <div class="col-sm-7 enquiry-value text-lowercase">@Model.Email</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Phone Number</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.PhoneNumber</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Next of Kin</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.NextOfKin</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Address of Next of Kin</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.NokAddress</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">NoK Phone Number</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.NoKPhoneNumber</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">NoK Relationship</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.NokRelationship</div>
+                                    </div>
+                                    <hr />
+                                    <h5><label>Employment</label></h5>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Employer</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.Employer</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Employer Address</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.EmployerAddress</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Posted By</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.PostedBy</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Date Created</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.TransDate.ToString("yyyy-MM-dd")</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-5">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Customer Number</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.ID</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Business Names</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.Lastname</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Business Type</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.CustomerType</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">RC Number</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.RCNo</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Date of Incorporation</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.DateOfBirth.ToString("yyyy-MM-dd")</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Type of Incorporation</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.IncorporationType</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Registered Body</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.RegisteredBody</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Business Sector</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.Sector</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <h5><label>Contact</label></h5>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Principal Officer</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.NextOfKin</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Principal Officer Address</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.NokAddress</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Principal Officer Phone</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.NoKPhoneNumber</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Principal Officer Relationship</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.NokRelationship</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Business Address</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.ContactAddress</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Company Email</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.Email</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Phone Number</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.PhoneNumber</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Website</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.Website</div>
+                                    </div>
+                                    <hr />
+                                    <h5><label>Financial</label></h5>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Startup Capital</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.StartupCapital.ToString("#,##0.00")</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Monthly Turnover</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.Turnover.ToString("#,##0.00")</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Customer Base</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.CustomerBase</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Posted By</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.PostedBy</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 enquiry-text text-right">Date Created</div>
+                                        <div class="col-sm-7 enquiry-value">@Model.TransDate.ToString("yyyy-MM-dd")</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="panel-footer">
+            <a asp-action="CustomerEnquiry" asp-controller="Enquiry" class="btn btn-primary btn-sm pull-right">Back</a>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

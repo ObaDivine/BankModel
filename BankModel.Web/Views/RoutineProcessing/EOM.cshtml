@@ -1,0 +1,96 @@
+﻿@using BankModel.Web.Interfaces
+@inject IRoutineProcessingService RoutineProcessingService
+@model EODViewModel
+@inject IAccountService AccountService
+@{
+    ViewData["Title"] = "EOM";
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            @Html.Partial("_StatusMessage", Model.StatusMessage)
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <h5>Last Day Processing</h5>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        @{
+                            var result = await RoutineProcessingService.IsEOMLastDay();
+                            if (result)
+                            {
+                                <ul class="list-group">
+                                    <li class="list-group-item justify-content-between">
+                                        <a asp-action="LastDayEOD" asp-controller="RoutineProcessing">End Day</a>
+                                    </li>
+                                </ul>
+
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <h5>End of Month Processing</h5>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        @{
+                            var isEOMLastDay = await RoutineProcessingService.IsEOMLastDay();
+                            var eomLastDatyCompleted = await RoutineProcessingService.EOMLastDayCompleted();
+                            if (isEOMLastDay && eomLastDatyCompleted)
+                            {
+                                <ul class="list-group">
+                                    <li class="list-group-item justify-content-between">
+                                        <a asp-action="EOMSavingsInterest" asp-controller="RoutineProcessing">Savings Interest</a>
+                                    </li>
+                                    <li class="list-group-item justify-content-between">
+                                        <a asp-action="EOMOverdrawnAccount" asp-controller="RoutineProcessing">Overdrawn Account</a>
+                                    </li>
+                                    <li class="list-group-item justify-content-between">
+                                        <a asp-action="EOMSMS" asp-controller="RoutineProcessing">Month End SMS</a>
+                                    </li>
+                                    <li class="list-group-item justify-content-between">
+                                        <a asp-action="EOMLoanRepayment" asp-controller="RoutineProcessing">Loan Repayment</a>
+                                    </li>
+                                    <li class="list-group-item justify-content-between">
+                                        <a asp-action="EOMLoanDefault" asp-controller="RoutineProcessing">Loan Default</a>
+                                    </li>
+                                    <li class="list-group-item justify-content-between">
+                                        <a asp-action="EOMFixedDeposit" asp-controller="RoutineProcessing">Fixed Deposit</a>
+                                    </li>
+                                    <li class="list-group-item justify-content-between">
+                                        <a asp-action="EOMOverdrawn" asp-controller="RoutineProcessing">Month End Overdrawn</a>
+                                    </li>
+                                    <li class="list-group-item justify-content-between">
+                                        <a asp-action="EOMProfitandLoss" asp-controller="RoutineProcessing">Month Profit and Loss</a>
+                                    </li>
+                                    <li class="list-group-item justify-content-between">
+                                        <a asp-action="EOMBalanceSheet" asp-controller="RoutineProcessing">Balance Sheet</a>
+                                    </li>
+                                </ul>
+                            }
+                        }
+                        @{
+                            var eomCompleted = await RoutineProcessingService.EOMCompleted();
+                            if (isEOMLastDay && eomLastDatyCompleted && eomCompleted)
+                            {
+                                <form asp-action="EOD" asp-controller="RoutineProcessing" method="post" class="form-inline">
+                                    <label>Start New Month:</label> <input asp-for="StartDate" class="form-control" style="width:300px;" />
+                                    <button class="btn btn-primary" type="submit">End Month</button>
+                                </form>
+                            }
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,60 @@
+﻿@model SystemUsersViewModel
+@{
+    ViewData["Title"] = "System Admin";
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-offset-4 col-md-4">
+            @Html.Partial("_StatusMessage", Model.StatusMessage)
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Update System User</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form asp-action="UpdateSystemUser" asp-controller="SystemAdmin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <select asp-for="Branch" asp-items="@{(SelectList)ViewData["Branches"]}" class="form-control"></select>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="Username" class="form-control borderless" placeholder="Username" />
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="Email" class="form-control borderless" placeholder="Email" />
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="PhoneNumber" class="form-control borderless" placeholder="Phone number" />
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="TransactionLimit" class="form-control borderless" placeholder="Transaction limit" type="number" step="0.01"/>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="ApprovalLimit" class="form-control borderless" placeholder="Approval limit" type="number" step="0.01"/>
+                        </div>
+                        <div class="form-group">
+                            <select asp-for="Role" asp-items="@{(SelectList)ViewData["Roles"]}" class="form-control"></select>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label asp-for="ActivateUser">
+                                    <input asp-for="ActivateUser" />
+                                    @Html.DisplayNameFor(m => m.ActivateUser)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary form-control" type="submit">Update User</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="SystemUsersListing" asp-controller="SystemAdmin">View Users</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

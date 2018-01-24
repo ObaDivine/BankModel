@@ -1,0 +1,83 @@
+﻿@using BankModel.Web.Interfaces
+@inject IRoutineProcessingService RoutineProcessingService
+@model EODViewModel
+@inject IAccountService AccountService
+@{
+    ViewData["Title"] = "EOD";
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            @Html.Partial("_StatusMessage", Model.StatusMessage)
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>End of Day Processing</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    @{
+                        var result = await RoutineProcessingService.NoEODPendingItems();
+                        if (result)
+                        {
+                            <form asp-action="EOD" asp-controller="RoutineProcessing" method="post" class="form-inline">
+                                <label>Start New Day:</label> <input asp-for="StartDate" class="form-control" style="width:300px;" />
+                                <button class="btn btn-primary" type="submit">End Day</button>
+                            </form>
+                        }
+                    }
+                    <hr />
+                    <ul class="list-group">
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingSystemUsers" asp-controller="RoutineProcessing">Pending System Users</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingSystemUsers"]</span>
+                        </li>
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingBranch" asp-controller="RoutineProcessing">Pending Branches</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingBranch"]</span>
+                        </li>
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingChartofAccount" asp-controller="RoutineProcessing">Pending Chart of Account</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingChartofAccount"]</span>
+                        </li>
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingProfile" asp-controller="RoutineProcessing">Pending Profiles</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingProfile"]</span>
+                        </li>
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingAccount" asp-controller="RoutineProcessing">Pending Accounts</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingAccount"]</span>
+                        </li>
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingCashTransaction" asp-controller="RoutineProcessing">Pending Transaction</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingTransaction"]</span>
+                        </li>
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingLoan" asp-controller="RoutineProcessing">Pending Loans</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingLoan"]</span>
+                        </li>
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingLoanRepayment" asp-controller="RoutineProcessing">Pending Loan Repayment</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingLoanRepayment"]</span>
+                        </li>
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingFixedDeposit" asp-controller="RoutineProcessing">Pending Fixed Deposit</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingFixedDeposit"]</span>
+                        </li>
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingSalary" asp-controller="RoutineProcessing">Pending Salary</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingSalary"]</span>
+                        </li>
+                        <li class="list-group-item justify-content-between">
+                            <a asp-action="PendingMobileMoney" asp-controller="RoutineProcessing">Pending Mobile Money Transaction</a>
+                            <span class="badge badge-default badge-pill">@ViewData["PendingMobileMoney"]</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+

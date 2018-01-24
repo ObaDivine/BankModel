@@ -1,0 +1,73 @@
+﻿@using BankModel.Service.Interfaces
+@inject ISetupService SetupService
+@{
+    ViewData["Title"] = "Setup";
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Branch Listing</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table data-toggle="table" data-class="tabel table-condensed"
+                           data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                           data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                           data-show-pagination-switch="true" data-id-field="Id">
+                        <thead>
+                            <tr>
+                                <th data-field="Id" class="hidden">ID</th>
+                                <th data-field="BranchCode">Branch Code</th>
+                                <th data-field="BranchDesc">Description</th>
+                                <th data-field="BranchLocation">Location</th>
+                                <th data-field="BranchManager">Manager</th>
+                                <th data-field="PostedBy">Created By</th>
+                                <th data-field="TransDate">Date Created</th>
+                                <th data-field="Status">Status</th>
+                                <th data-field="action"><i class="fa fa-cog"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="hidden">@item.ID</td>
+                                    <td>@item.BranchCode</td>
+                                    <td>@item.BranchDesc</td>
+                                    <td>@item.BranchLocation</td>
+                                    <td>@item.BranchManager</td>
+                                    <td>@item.PostedBy</td>
+                                    <td>@item.TransDate.ToString("d")</td>
+                                    <td>@item.Status</td>
+                                    <td>
+                                        @if (item.Status == "ACTIVE")
+                                        {
+                                            @if (!SetupService.IsBranchInUse(item.ID))
+                                            {
+                                                <a asp-action="UpdateBranch" asp-controller="Setup" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-pencil"> Update</i></a>
+                                            }
+                                        }
+                                        @if(item.Status == "PENDING")
+                                        {
+                                            <a asp-action="UpdateBranch" asp-controller="Setup" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-pencil"> Update</i></a>
+                                            <a asp-action="DropBranch" asp-controller="Setup" asp-route-id="@item.ID" class="btn btn-danger btn-sm"><i class="fa fa-trash"> Drop</i></a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="Branches" asp-controller="Setup" class="btn btn-primary btn-sm pull-right">Back</a>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

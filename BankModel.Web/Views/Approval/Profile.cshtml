@@ -1,0 +1,135 @@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title"><h5>Pending Profile</h5></div>
+                </div>
+                <div class="panel-body">
+                    <div id="Tabs" role="tabpanel">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="active">
+                                <a href="#individual" aria-controls="individual-profile" role="tab" data-toggle="tab">
+                                    Individual Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#corporate" aria-controls="corporate-profile" role="tab" data-toggle="tab">
+                                    Corporate Profile
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content" style="padding-top: 20px">
+                            <div role="tabpanel" class="tab-pane active" id="individual">
+                                <table data-toggle="table" data-class="table table-hover table-condense"
+                                       data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                                       data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                                       data-show-pagination-switch="true" data-id-field="Id">
+                                    <thead>
+                                        <tr>
+                                            <th data-field="Id">ID</th>
+                                            <th data-field="Title">Title</th>
+                                            <th data-field="Names">Name</th>
+                                            <th data-field="DateOfBirth">Date of Birth</th>
+                                            <th data-field="Employer">Employer</th>
+                                            <th data-field="Designation">Designation</th>
+                                            <th data-field="PostedBy">Created By</th>
+                                            <th data-field="action"><i class="fa fa-cog"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            @if(item.ID.Contains("IND"))
+                                            {
+                                                <tr>
+                                                    <td>@item.ID</td>
+                                                    <td>@item.Title</td>
+                                                    <td>@string.Concat(item.Lastname, ", ", item.Othernames)</td>
+                                                    <td>@item.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                                    <td>@item.Employer</td>
+                                                    <td>@item.Designation</td>
+                                                    <td>@item.PostedBy</td>
+                                                    <td>
+                                                        <div class="btn-group-xs">
+                                                            <a asp-action="Details" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-info"><i class="fa fa-info"> Details</i></a>
+                                                            <a asp-action="ApproveProfile" asp-controller="Approval" asp-route-id="@item.ID" class="btn btn-success"><i class="fa fa-thumbs-up"> Approve</i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                             }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="corporate">
+                                <table data-toggle="table" data-class="table table-hover table-condense"
+                                       data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                                       data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                                       data-show-pagination-switch="true" data-id-field="Id">
+                                    <thead>
+                                        <tr>
+                                            <th data-field="Id">ID</th>
+                                            <th data-field="Lastname">Name</th>
+                                            <th data-field="EmployerAddress">Business Address</th>
+                                            <th data-field="DateOfBirth">Date of Inc.</th>
+                                            <th data-field="IncorporationType">Type of Inc.</th>
+                                            <th data-field="RCNo">RC Number</th>
+                                            <th data-field="PostedBy">Created By</th>
+                                            <th data-field="action"><i class="fa fa-cog"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            @if(!item.ID.Contains("IND"))
+                                            {
+                                                <tr>
+                                                    <td>@item.ID</td>
+                                                    <td>@item.Lastname</td>
+                                                    <td>@item.EmployerAddress</td>
+                                                    <td>@item.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                                    <td>@item.IncorporationType</td>
+                                                    <td>@item.RCNo</td>
+                                                    <td>@item.PostedBy</td>
+                                                    <td>
+                                                        <div class="btn-group-xs">
+                                                            <a asp-action="ProfileDetails" asp-controller="CustomerService" asp-route-id="@item.ID" class="btn btn-info"><i class="fa fa-info"> Details</i></a>
+                                                            <a asp-action="ApproveProfile" asp-controller="Approval" asp-route-id="@item.ID" class="btn btn-success"><i class="fa fa-thumbs-up"> Approve</i></a>
+                                                        </div>
+                                                    </td>
+                                                 </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+
+
+
+
+
+
+
+
+
+

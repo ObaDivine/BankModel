@@ -1,0 +1,104 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title"><h5>User Details</h5></div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right text-right">ID</div>
+                        <div class="col-sm-7 enquiry-value">@Model.ID</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Branch</div>
+                        <div class="col-sm-7 enquiry-value">
+                            Model.Branch
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Username</div>
+                        <div class="col-sm-7 enquiry-value">@Model.Username</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Email</div>
+                        <div class="col-sm-7 enquiry-value">@Model.Email</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Phone Number</div>
+                        <div class="col-sm-7 enquiry-value">@Model.PhoneNumber</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Lockout Enabled</div>
+                        <div class="col-sm-7 enquiry-value">@Model.LockoutEnabled</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Password Expiry</div>
+                        <div class="col-sm-7 enquiry-value">@Model.PasswordExpiryDate.ToString("yyyy-MM-dd")</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Profile Image</div>
+                        <div class="col-sm-7 enquiry-value">@Model.ProfileImage</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Transaction Limit</div>
+                        <div class="col-sm-7 enquiry-value">@Model.TransactionLimit</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Approval Limit</div>
+                        <div class="col-sm-7 enquiry-value">@Model.ApprovalLimit</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Date Created</div>
+                        <div class="col-sm-7 enquiry-value">@Model.TransDate.ToString("yyyy-MM-dd")</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Approved By</div>
+                        <div class="col-sm-7 enquiry-value">@Model.ApprovedBy</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-3 enquiry-text text-right">Status</div>
+                        <div class="col-sm-7 enquiry-value">@Model.Status</div>
+                    </div>
+                    <div class="panel-footer">
+                        <a asp-action="UserRoles" asp-controller="SystemAdmin" class="btn btn-primary btn-sm pull-right">Back</a>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Roles and Permission</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <label>Roles:</label>
+                    @foreach (var role in Model.Roles)
+                        {
+                        <p>@role</p>
+
+                        }
+                    <hr />
+                    <label>Permissions:</label>
+                    @foreach (var permission in Model.Permissions)
+                        {
+                        <p>@permission</p>
+
+                        }
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+

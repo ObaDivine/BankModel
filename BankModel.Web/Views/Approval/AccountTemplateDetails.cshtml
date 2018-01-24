@@ -1,0 +1,110 @@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-sm-offset-3 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title"><h5>Account Template Details</h5></div>
+                </div>
+                <div class="panel-body">
+                    <div class="container-fluid">
+                        <h5><label>Details</label>
+                            <label class="pull-right">Currency NGN</label>
+                        </h5>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Template Name</div>
+                            <div class="col-sm-8 enquiry-value">@Model.TemplateName</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Account Type</div>
+                            <div class="col-sm-8 enquiry-value">@Model.AccountType</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Product Code</div>
+                            <div class="col-sm-8 enquiry-value">@Model.ProductCode</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Minimum Balance</div>
+                            <div class="col-sm-8 enquiry-value">@Model.MinimumBalance.ToString("#,##0.00")</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Use For Loans</div>
+                            <div class="col-sm-8 enquiry-value">@Model.UseForLoans</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Use For Fixed Deposit</div>
+                            <div class="col-sm-8 enquiry-value">@Model.UseForFixedDeposit</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Accept Cheques</div>
+                            <div class="col-sm-8 enquiry-value">@Model.AcceptCheques</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Allow Overdrawn</div>
+                            <div class="col-sm-8 enquiry-value">@Model.AllowOverdraw</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Post No Debit / Credit</div>
+                            <div class="col-sm-8 enquiry-value">@string.Concat(Model.PostNoDebit, " / ", Model.PostNoCredit)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Interest Rate</div>
+                            <div class="col-sm-8 enquiry-value">@string.Concat(Model.InterestPerAnnum, "% per annum. Drops ", Model.InterestDrop)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Overdrawn Charge</div>
+                            <div class="col-sm-8 enquiry-value">@string.Concat(Model.ChargeForOverdrawn, " ",Model.OverdrawnFee," ", Model.OverdrawnChargeType)</div>
+                        </div>
+                        <hr />
+                        <h5><label>Transaction and Amount Limits</label></h5>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Withdrawal Limit</div>
+                            <div class="col-sm-8 enquiry-value">@string.Concat(Model.WithdrawalTransactionLimit, " Transactions per ", Model.WithdrawalTransactionPeriod)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Withdrawal Amount</div>
+                            <div class="col-sm-8 enquiry-value">@string.Concat(Model.WithdrawalAmountLimit.ToString("#,##0.00"), " per ", Model.WithdrawalAmountPeriod)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Deposit Limit</div>
+                            <div class="col-sm-8 enquiry-value">@string.Concat(Model.DepositTransactionLimit, " Transactions per ", Model.DepositTransactionPeriod)</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Deposit Amount</div>
+                            <div class="col-sm-8 enquiry-value">@string.Concat(Model.DepositAmountLimit.ToString("#,##0.00"), " per ", Model.DepositAmountPeriod)</div>
+                        </div>
+                        <hr />
+                        <h5><label>Notifications</label></h5>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">SMS</div>
+                            <div class="col-sm-8 enquiry-value">@string.Concat(Model.SMSNotification, " / ",Model.SMSCost ," per SMS")</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Email</div>
+                            <div class="col-sm-8 enquiry-value">@Model.EmailNotification</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 enquiry-text text-right">Monthly Statement</div>
+                            <div class="col-sm-8 enquiry-value">@string.Concat(Model.MonthlyStatement, " By ", Model.MonthlyStatementBy)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="Template" asp-controller="Approval" class="btn btn-primary btn-sm pull-right">Back</a>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

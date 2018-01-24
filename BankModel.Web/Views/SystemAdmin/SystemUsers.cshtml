@@ -1,0 +1,234 @@
+﻿@model SystemUsersViewModel
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Branch").change(function () {
+            var selectedState = ("#Branch").valueOf();
+            if ($("Branch").val() != "") {
+                $.ajax
+                    ({
+                        url: "/SystemAdmin/GetBranchStaff",
+                        type: "POST",
+                        cache: false,
+                        dataType: "JSON",
+                        data: { branch: $("#Branch").val() },
+                        success: function (Staff) {
+                            $("#Staff").html("");
+                            for (var i = 0; i < Staff.length; i++) {
+                                $("#Staff").append("<option>" + Staff[i] + "</option>");
+                            }
+                        },
+                        error: function (xhr, status) { alert(status); }
+                    });
+            };
+        });
+
+        $("#MaintenanceType").change(function () {
+            if ($(this).val() == "UPDATE TRANSACTION LIMIT") {
+                $("#LimitsModal").modal('show');
+            }
+
+            if ($(this).val() == "UPDATE APPROVAL LIMIT") {
+                $("#LimitsModal").modal('show');
+            }
+
+            if ($(this).val() == "EXTEND PASSWORD EXPIRY") {
+                $("#PasswordDaysModal").modal('show');
+            }
+
+            if ($(this).val() == "CHANGE BRANCH") {
+                $("#BranchModal").modal('show');
+            }
+        });
+    })
+</script>
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            @Html.Partial("_StatusMessage", Model.StatusMessage)
+            <form asp-action="" asp-controller="SystemAdmin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                <div class="panel-group">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <h5>Create System User</h5>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div asp-validation-summary="All" class="text-danger col-sm-offset-4 col-sm-8"></div>
+                            <div class="form-group-sm">
+                                <label asp-for="Branch" class="control-label enquiry-text col-sm-4"></label>
+                                <div class="col-sm-8">
+                                    <select asp-for="Branch" asp-items="@{(SelectList)ViewData["Branches"]}" class="form-control" title="llsel">
+                                        <option>--Select--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group-sm">
+                                <label asp-for="Staff" class="control-label enquiry-text col-sm-4"></label>
+                                <div class="col-sm-8">
+                                    <select asp-for="Staff" asp-items="@{(SelectList)ViewData["Customers"]}" class="form-control"></select>
+                                </div>
+                            </div>
+                            <div class="form-group-sm">
+                                <label asp-for="Username" class="control-label enquiry-text col-sm-4"></label>
+                                <div class="col-sm-8">
+                                    <input asp-for="Username" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group-sm">
+                                <label asp-for="TransactionLimit" class="control-label enquiry-text col-sm-4"></label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i>NGN</i></div>
+                                        <input asp-for="TransactionLimit" class="form-control" type="number" step="0.01" />
+                                        <div class="input-group-addon"><i>0.00</i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group-sm">
+                                <label asp-for="ApprovalLimit" class="control-label enquiry-text col-sm-4"></label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i>NGN</i></div>
+                                        <input asp-for="ApprovalLimit" class="form-control" type="number" step="0.01" />
+                                        <div class="input-group-addon"><i>0.00</i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group-sm">
+                                <label asp-for="Role" class="control-label enquiry-text col-sm-4"></label>
+                                <div class="col-sm-8">
+                                    <select asp-for="Role" asp-items="@{(SelectList)ViewData["Roles"]}" class="form-control"></select>
+                                </div>
+                            </div>
+                            <div class="form-group-sm">
+                                <div class="col-sm-offset-4 col-sm-8">
+                                    <div class="checkbox">
+                                        <label asp-for="ActivateUser">
+                                            <input asp-for="ActivateUser" />
+                                            @Html.DisplayNameFor(m => m.ActivateUser)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <a asp-action="SystemUsersListing" asp-controller="SystemAdmin"><b>View Users</b></a>
+                            <button class="btn btn-primary btn-sm pull-right" type="submit" formaction="/SystemAdmin/SystemUsers">Add User</button>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <h5>User Maintenance</h5>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group-sm">
+                                <label asp-for="MaintenanceType" class="control-label enquiry-text col-sm-4"></label>
+                                <div class="col-sm-8">
+                                    <select asp-for="MaintenanceType"  class="form-control">
+                                        <option>CHANGE BRANCH</option>
+                                        <option>CLEAR LOGIN</option>
+                                        <option>DISABLE USER</option>
+                                        <option>ENABLE USER</option>
+                                        <option>EXTEND PASSWORD EXPIRY</option>
+                                        <option>MAKE PASSWORD EXPIRE</option>
+                                        <option>RESET PASSWORD</option>
+                                        <option>UPDATE APPROVAL LIMIT</option>
+                                        <option>UPDATE TRANSACTION LIMIT</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="LimitsModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">BankModel - Transaction/Approval Limit</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <label asp-for="LimitField" class="control-label enquiry-text col-sm-4"></label>
+                                                <div class="col-sm-8">
+                                                    <input asp-for="LimitField" class="form-control" type="number" step="0.001" required="required"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button name="btnLimitsClose" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
+                                        <button id="btnLimits" type="submit" class="btn btn-primary btn-sm" formaction="/SystemAdmin/SystemUserMaintenance">Maintain User</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="PasswordDaysModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">BankModel - Password Extension Days</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <label asp-for="PasswordDays" class="control-label enquiry-text col-sm-4"></label>
+                                                <div class="col-sm-8">
+                                                    <input asp-for="PasswordDays" class="form-control" type="number" step="1" required="required" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button name="btnPasswordDaysClose" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
+                                        <button id="btnPasswordDays" type="submit" class="btn btn-primary btn-sm" formaction="/SystemAdmin/SystemUserMaintenance">Maintain User</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="BranchModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">BankModel - Branch Network</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <label asp-for="Branch" class="control-label enquiry-text col-sm-4"></label>
+                                                <div class="col-sm-8">
+                                                    <select asp-for="Branch" asp-items="@{(SelectList)ViewData["Branches"]}" class="form-control" required="required">
+                                                        <option>--Select--</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button name="btnBranchClose" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
+                                        <button id="btnBranch" type="submit" class="btn btn-primary btn-sm" formaction="/SystemAdmin/SystemUserMaintenance">Maintain User</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button type="submit" class="btn btn-primary btn-sm pull-right" formaction="/SystemAdmin/SystemUserMaintenance">Maintain User</button>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+

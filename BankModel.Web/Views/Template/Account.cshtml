@@ -1,0 +1,398 @@
+﻿@model TemplateAccountViewModel
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+<script>
+    $(document).ready(function () {
+
+        var navListItems = $('div.setup-panel div a'),
+            allWells = $('.setup-content'),
+            allNextBtn = $('.nextBtn');
+
+        allWells.hide();
+
+        navListItems.click(function (e) {
+            e.preventDefault();
+            var $target = $($(this).attr('href')),
+                $item = $(this);
+
+            if (!$item.hasClass('disabled')) {
+                navListItems.removeClass('btn-success').addClass('btn-default');
+                $item.addClass('btn-success');
+                allWells.hide();
+                $target.show();
+                $target.find('input:eq(0)').focus();
+            }
+        });
+
+        allNextBtn.click(function () {
+            var curStep = $(this).closest(".setup-content"),
+                curStepBtn = curStep.attr("id"),
+                nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+                curInputs = curStep.find("input[type='text'],input[type='url']"),
+                isValid = true;
+
+            $(".form-group").removeClass("has-error");
+            for (var i = 0; i < curInputs.length; i++) {
+                if (!curInputs[i].validity.valid) {
+                    isValid = false;
+                    $(curInputs[i]).closest(".form-group").addClass("has-error");
+                }
+            }
+
+            if (isValid) nextStepWizard.removeAttr('disabled').trigger('click');
+        });
+
+        $('div.setup-panel div a.btn-success').trigger('click');
+    });
+</script>
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            @Html.Partial("_StatusMessage", Model.StatusMessage)
+            <div class="stepwizard">
+                <div class="stepwizard-row setup-panel">
+                    <div class="stepwizard-step col-xs-2">
+                        <a href="#step-1" type="button" class="btn btn-success btn-circle">1</a>
+                        <p><small>Account</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3">
+                        <a href="#step-2" type="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                        <p><small>Withdrawal Limits</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-3">
+                        <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                        <p><small>Deposit Limits</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-2">
+                        <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                        <p><small>Notification</small></p>
+                    </div>
+                    <div class="stepwizard-step col-xs-2">
+                        <a href="#step-5" type="button" class="btn btn-default btn-circle" disabled="disabled">5</a>
+                        <p><small>Charges</small></p>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Account" asp-controller="Template" role="form" enctype="multipart/form-data" method="post" class="form-horizontal">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="panel panel-default setup-content" id="step-1">
+                    <div class="panel-heading">
+                        <div class="panel-title"><h5>Account Details</h5></div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group-sm">
+                            <label asp-for="TemplateName" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <input asp-for="TemplateName" class="form-control" placeholder="Template name" type="text" />
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="AccountType" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="AccountType" class="form-control">
+                                    <option>JOINT</option>
+                                    <option>INDIVIDUAL</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="ProductCode" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <input asp-for="ProductCode" class="form-control" type="number" step="1" />
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="MinimumBalance" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i>NGN</i></div>
+                                    <input asp-for="MinimumBalance" class="form-control" type="number" step="0.001" />
+                                    <div class="input-group-addon"><i>0.00</i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="UseForLoans" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="UseForLoans" class="form-control">
+                                    <option>FALSE</option>
+                                    <option>TRUE</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="UseForFixedDeposit" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="UseForFixedDeposit" class="form-control">
+                                    <option>FALSE</option>
+                                    <option>TRUE</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="AcceptCheques" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="AcceptCheques"  class="form-control">
+                                    <option>FALSE</option>
+                                    <option>TRUE</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <a asp-action="AccountTemplateListing" asp-controller="Template"><b>View Account Templates</b></a>
+                    </div>
+                </div>
+
+                <div class="panel panel-default setup-content" id="step-2">
+                    <div class="panel-heading">
+                        <div class="panel-title"><h5>Withdrawal Limit</h5></div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group-sm">
+                            <label asp-for="WithdrawalTransactionLimit" class="control-label enquiry-text col-sm-5"></label>
+                            <div class="col-sm-7">
+                                <input asp-for="WithdrawalTransactionLimit" class="form-control" type="number" step="1" />
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="WithdrawalTransactionPeriod" class="control-label enquiry-text col-sm-5"></label>
+                            <div class="col-sm-7">
+                                <select asp-for="WithdrawalTransactionPeriod" class="form-control">
+                                    <option>NOT APPLICABLE</option>
+                                    <option>WEEKLY</option>
+                                    <option>MONTHLY</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="WithdrawalAmountLimit" class="control-label enquiry-text col-sm-5"></label>
+                            <div class="col-sm-7">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i>NGN</i></div>
+                                    <input asp-for="WithdrawalAmountLimit" class="form-control" type="number" step="0.001" />
+                                    <div class="input-group-addon"><i>0.00</i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="WithdrawalAmountPeriod" class="control-label enquiry-text col-sm-5"></label>
+                            <div class="col-sm-7">
+                                <select asp-for="WithdrawalAmountPeriod" class="form-control">
+                                    <option>NOT APPLICABLE</option>
+                                    <option>WEEKLY</option>
+                                    <option>MONTHLY</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="PostNoDebit" class="control-label enquiry-text col-sm-5"></label>
+                            <div class="col-sm-7">
+                                <select asp-for="PostNoDebit" class="form-control">
+                                    <option>FALSE</option>
+                                    <option>TRUE</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default setup-content" id="step-3">
+                    <div class="panel-heading">
+                        <div class="panel-title"><h5>Deposit Limit</h5></div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group-sm">
+                            <label asp-for="DepositTransactionLimit" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <input asp-for="DepositTransactionLimit" class="form-control" type="number" step="1" />
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="DepositTransactionPeriod" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="DepositTransactionPeriod" class="form-control">
+                                    <option>NOT APPLICABLE</option>
+                                    <option>WEEKLY</option>
+                                    <option>MONTHLY</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="DepositAmountLimit" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i>NGN</i></div>
+                                    <input asp-for="DepositAmountLimit" class="form-control" type="number" step="0.001" />
+                                    <div class="input-group-addon"><i>0.00</i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="DepositAmountPeriod" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="DepositAmountPeriod" class="form-control">
+                                    <option>NOT APPLICABLE</option>
+                                    <option>WEEKLY</option>
+                                    <option>MONTHLY</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="PostNoCredit" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="PostNoCredit"  class="form-control">
+                                    <option>FALSE</option>
+                                    <option>TRUE</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default setup-content" id="step-4">
+                    <div class="panel-heading">
+                        <div class="panel-title"><h5>Notification</h5></div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group-sm">
+                            <label asp-for="SMSNotification" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="SMSNotification" class="form-control">
+                                    <option>FALSE</option>
+                                    <option>TRUE</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="SMSCost" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i>NGN</i></div>
+                                    <input asp-for="SMSCost" class="form-control" type="number" step="0.01" />
+                                    <div class="input-group-addon"><i>per SMS</i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="EmailNotification" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="EmailNotification" class="form-control">
+                                    <option>FALSE</option>
+                                    <option>TRUE</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="MonthlyStatement" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="MonthlyStatement" class="form-control">
+                                    <option>FALSE</option>
+                                    <option>TRUE</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="MonthlyStatementBy" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="MonthlyStatementBy" asp-items="@{(SelectList)ViewData["MonthlyStatement"]}" class="form-control">
+                                    <option>NOT APPLICABLE</option>
+                                    <option>EMAIL</option>
+                                    <option>MAIL</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="MonthlyStatementCost" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i>NGN</i></div>
+                                    <input asp-for="MonthlyStatementCost" class="form-control" type="number" step="0.001" />
+                                    <div class="input-group-addon"><i>0.00</i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default setup-content" id="step-5">
+                    <div class="panel-heading">
+                        <div class="panel-title"><h5>Charges</h5></div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group-sm">
+                            <label asp-for="InterestPerAnnum" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i>NGN</i></div>
+                                    <input asp-for="InterestPerAnnum" class="form-control" type="number" step="0.001" />
+                                    <div class="input-group-addon"><i>% per annum</i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="InterestDrop" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="InterestDrop" class="form-control">
+                                    <option>NOT APPLICABLE</option>
+                                    <option>ANNUALLY</option>
+                                    <option>DAILY</option>
+                                    <option>MONTHLY</option>
+                                    <option>QUATERLY</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="AllowOverdraw" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="AllowOverdraw" class="form-control">
+                                    <option>FALSE</option>
+                                    <option>TRUE</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="ChargeForOverdrawn" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="ChargeForOverdrawn" class="form-control">
+                                    <option>FALSE</option>
+                                    <option>TRUE</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="OverdrawnChargeType" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <select asp-for="OverdrawnChargeType" class="form-control">
+                                    <option>NOT APPLICABLE</option>
+                                    <option>FLAT</option>
+                                    <option>PERCENT</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-sm">
+                            <label asp-for="OverdrawnFee" class="control-label enquiry-text col-sm-4"></label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i>NGN</i></div>
+                                    <input asp-for="OverdrawnFee" class="form-control" type="number" step="0.01" />
+                                    <div class="input-group-addon"><i>0.00</i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm"><input asp-for="ID" class="hidden" /></div>
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary btn-sm pull-right" type="submit">Create Template</button>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

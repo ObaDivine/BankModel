@@ -1,0 +1,78 @@
+﻿@using BankModel.Web.Interfaces
+@inject ITemplateService TemplateService
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    ViewData["Title"] = config.GetSection("AppInfo")["Title"];
+}
+
+<div class="container-fluid top-panel">
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Partial("_StatusMessage", ViewData["StatusMessage"])
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Account Template Listing</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table data-toggle="table" data-class="table table-hover table-condense" 
+                           data-striped="true" data-pagination="true" data-search="true" data-show-header="true"
+                           data-show-column="true" data-show-refresh="true" data-show-toggle="true"
+                           data-show-pagination-switch="true" data-id-field="Id">
+                        <thead>
+                            <tr>
+                                <th data-field="Id" class="hidden">ID</th>
+                                <th data-field="TemplateName">Template Name</th>
+                                <th data-field="ProductCode">Product Code</th>
+                                <th data-field="PostedBy">Created By</th>
+                                <th data-field="TransDate">Date Created</th>
+                                <th data-field="Status">Status</th>
+                                <th data-field="action"><i class="fa fa-cog"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="hidden">@item.ID</td>
+                                    <td>@item.TemplateName</td>
+                                    <td>@item.ProductCode</td>
+                                    <td>@item.PostedBy</td>
+                                    <td>@item.TransDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.Status</td>
+                                    <td>
+                                        @if (item.Status == "ACTIVE")
+                                        {
+                                            @if (!TemplateService.IsAccountTemplateInUse(item.ID))
+                                            {
+                                                <div class="btn-group-sm">
+                                                    <a asp-action="AccountTemplateDetails" asp-controller="Template" asp-route-id="@item.ID" class="btn btn-info"><i class="fa fa-info"> Details</i></a>
+                                                    <a asp-action="UpdateAccountTemplate" asp-controller="Template" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-pencil"> Update</i></a>
+                                                </div>
+                                            }
+                                        }
+                                        @if (item.Status == "PENDING")
+                                        {
+                                            <div class="btn-group-sm">
+                                                <a asp-action="AccountTemplateDetails" asp-controller="Template" asp-route-id="@item.ID" class="btn btn-info"><i class="fa fa-info"> Details</i></a>
+                                                <a asp-action="UpdateAccountTemplate" asp-controller="Template" asp-route-id="@item.ID" class="btn btn-info btn-sm"><i class="fa fa-pencil"> Update</i></a>
+                                                <a asp-action="DropAccountTemplate" asp-controller="Template" asp-route-id="@item.ID" class="btn btn-danger btn-sm"><i class="fa fa-trash"> Drop</i></a>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="Account" asp-controller="Template" class="btn btn-primary btn-sm pull-right">Back</a>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

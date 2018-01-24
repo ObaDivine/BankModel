@@ -1,0 +1,186 @@
+﻿body {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    font-size: 13px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-top: 30px;
+}
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+
+}
+
+.borderless{
+    border:0;
+}
+
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+.container-fluid.top-panel {
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+.enquiry-text{
+    color:#3d7dbc;
+}
+
+.enquiry-value {
+    color: red;
+}
+
+.panel-title h5 {
+    font-size: 13px;
+}
+
+.fa{
+    font-size:12px;
+}
+
+
+footer{
+    position:fixed;
+    bottom:0;
+    text-align:center;
+}
+
+h5{
+    color:#3d8dbc;
+}
+
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}
+
+.menu-header{
+    text-decoration:none;
+    font-size:14px;
+}
+
+a:link, a:visited, a:hover, a:active {
+    text-decoration: none;
+}
+
+.navbar{
+    color:white;
+}
+
+.panel-title h5{
+    color:#3d8dbc;
+}
+
+.profile-img .img-rounded {
+    width: 100px;
+    height: 100px;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: white;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    border: 2px solid whitesmoke;
+    border-radius: 4px;
+}
+
+.sidenav a {
+        text-decoration: none;
+        font-size: 12px;
+        transition: 0.3s;
+    }
+
+.sidenav a:hover {
+            color: #3d8db6;
+        }
+
+
+#main {
+    transition: margin-left .5s;
+    padding: 1px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+            font-size: 18px;
+        }
+}
+
+.stepwizard-step p {
+    margin-top: 0px;
+    color: #666;
+}
+
+.stepwizard-row {
+    display: table-row;
+}
+
+.stepwizard {
+    display: table;
+    width: 100%;
+    position: relative;
+}
+
+.stepwizard-step button[disabled] {
+    /*opacity: 1 !important;
+    filter: alpha(opacity=100) !important;*/
+}
+
+.stepwizard .btn.disabled, .stepwizard .btn[disabled], .stepwizard fieldset[disabled] .btn {
+    opacity: 1 !important;
+    color: #bbb;
+}
+
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-index: 0;
+}
+
+.stepwizard-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+.my-group .form-control{
+    width:50%;
+}
